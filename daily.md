@@ -16,4 +16,11 @@ Removing cloudera-manager stuff on the cluster should follow this link:
 
 https://www.cloudera.com/documentation/enterprise/5-6-x/topics/cm_ig_uninstall_cm.html
 
+iptables quick ref:
+
+```
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+```
 
