@@ -24,3 +24,14 @@ iptables -A FORWARD -i eth1 -o eth0 -j ACCEPT
 iptables -A FORWARD -i eth0 -o eth1 -m state --state RELATED,ESTABLISHED -j ACCEPT
 ```
 
+Use alternatives command utility to manage /etc/alternatives
+
+For example, do
+
+```
+alternative --config java
+```
+
+to update links to the desired java binary
+
+
