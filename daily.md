@@ -34,4 +34,10 @@ alternative --config java
 
 to update links to the desired java binary
 
+## 8/30/2017
 
+Cleaned disk space on my laptop. Removed mongodb built binaries entirely.
+
+```
+scons MONGO_VERSION=3.5.10 -c install
+```
