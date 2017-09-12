@@ -41,3 +41,9 @@ Cleaned disk space on my laptop. Removed mongodb built binaries entirely.
 ```
 scons MONGO_VERSION=3.5.10 -c install
 ```
+
+## 9/12/2017
+
+Reading from a ByteBuffer wrapped array is at least 2.5x slow than reading from the array directly.
+
+ 
