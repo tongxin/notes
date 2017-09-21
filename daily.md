@@ -46,4 +46,7 @@ scons MONGO_VERSION=3.5.10 -c install
 
 Reading from a ByteBuffer wrapped array is at least 2.5x slow than reading from the array directly.
 
+## 9/21/2017
+
+Tricky parts of building Spark inside Intellij: generated code won't be installed in the source path automatically. Rule of thumb: do a first round sbt package, then add the source path to the generated source in the project structure tab.
  
