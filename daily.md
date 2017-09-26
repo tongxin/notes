@@ -49,4 +49,15 @@ Reading from a ByteBuffer wrapped array is at least 2.5x slow than reading from 
 ## 9/21/2017
 
 Tricky parts of building Spark inside Intellij: generated code won't be installed in the source path automatically. Rule of thumb: do a first round sbt package, then add the source path to the generated source in the project structure tab.
- 
+
+## 9/26/2017
+
+When diagnosing which address and port a network service is bounded to and listening on, use this command
+
+```
+netstat -nlt 
+```
+
+When postgres is not able to be connected from outside local host, check that the bound address is correctly configured in ``<data>/postgresql.conf''
+
+
