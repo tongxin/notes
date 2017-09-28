@@ -60,4 +60,9 @@ netstat -nlt
 
 When postgres is not able to be connected from outside local host, check that the bound address is correctly configured in ``<data>/postgresql.conf''
 
+## 9/28/2017
+
+JDBC keeps failing to connect remote server. it turns out that JVM can detect network proxy at start up and sets the socksProxyHost system property accordingly.
+The JDBC implementation refuses to resolve host address if this property is set.
+
 
