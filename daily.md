@@ -74,4 +74,7 @@ To use apt-get with http proxy, create `/etc/apt/apt.conf` and include one line 
 Acquire::http::Proxy "http://172.20.110.182:1087";
 ```
 
-
+Set the following environment for running jvm with http proxy settings.
+```
+export JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=yourserver -Dhttp.proxyPort=8080 -Dhttp.proxyUser=username -Dhttp.proxyPassword=password"
+```
