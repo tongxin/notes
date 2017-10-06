@@ -65,4 +65,13 @@ When postgres is not able to be connected from outside local host, check that th
 JDBC keeps failing to connect remote server. it turns out that JVM can detect network proxy at start up and sets the socksProxyHost system property accordingly.
 The JDBC implementation refuses to resolve host address if this property is set.
 
+## 10/6/2017
+
+On ubuntu, use `dpkg -L <package>` to list the locations where the package files saved.
+
+To use apt-get with http proxy, create `/etc/apt/apt.conf` and include one line of proxy setting  as follows 
+```
+Acquire::http::Proxy "http://172.20.110.182:1087";
+```
+
 
