@@ -89,4 +89,6 @@ Update postgres to release 10 on 172.16.101.115
 
 Set up tpc-ds on 172.16.101.115
  
+To upgrade existing postgres database cluster to a newer major version, use pg_upgrade. See https://www.postgresql.org/docs/current/static/pgupgrade.html for reference.
+
 
