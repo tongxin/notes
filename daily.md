@@ -78,3 +78,15 @@ Set the following environment for running jvm with http proxy settings.
 ```
 export JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=yourserver -Dhttp.proxyPort=8080 -Dhttp.proxyUser=username -Dhttp.proxyPassword=password"
 ```
+
+## 10/8/2017
+
+Plan for today and tomorrow: 
+
+install and set up Spark/Impala/Myria on 172.16.101.115
+
+Update postgres to release 10 on 172.16.101.115
+
+Set up tpc-ds on 172.16.101.115
+ 
+
