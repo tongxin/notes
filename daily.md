@@ -79,6 +79,8 @@ Set the following environment for running jvm with http proxy settings.
 export JAVA_OPTS="$JAVA_OPTS -Dhttp.proxyHost=yourserver -Dhttp.proxyPort=8080 -Dhttp.proxyUser=username -Dhttp.proxyPassword=password"
 ```
 
+Replace the above http with https if the application relies on https connection. 
+
 ## 10/8/2017
 
 Plan for today and tomorrow: 
