@@ -93,4 +93,13 @@ Set up tpc-ds on 172.16.101.115
  
 To upgrade existing postgres database cluster to a newer major version, use pg_upgrade. See https://www.postgresql.org/docs/current/static/pgupgrade.html for reference.
 
+## 11/8/2017
 
+CSV data source for Spark SQL 
+
+https://github.com/databricks/spark-csv
+
+```
+$SPARK_HOME/bin/spark-shell --packages com.databricks:spark-csv_2.11:1.5.0
+
+```
