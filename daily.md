@@ -103,3 +103,10 @@ https://github.com/databricks/spark-csv
 $SPARK_HOME/bin/spark-shell --packages com.databricks:spark-csv_2.11:1.5.0
 
 ```
+
+## 12/21/2017
+
+After laptop updated to High Sierra (10.13.2), trying ssh connection to local server all failed due to unknown identification issues. It turns out the culprit is the local socks proxy. When the socks is diabled, ssh works fine. 
+
+
+
