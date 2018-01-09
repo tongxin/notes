@@ -1,6 +1,14 @@
+## Project description
 
+The goal is establish a unified approach for extending, composing and accelerating data analysis capabilities derived from different data models and computing paradigms.
 
-## Motivating examples
+Part I: Extending SQL databases with in-memory computing.
+
+Part II: Cross-engine hybrid query API, processing engine and orchestration middleware.
+
+Part III: Hybrid query optimization using machine learning and program synthesis(?).
+
+## Motivating examples for query push down
 
 ### Query 1
 
@@ -40,13 +48,17 @@ SELECT
 END
 ```
 
-To offload this query to a remote system preseving all the original declarative semantics, we need to
+To offload this query to a remote system while preseving all the original declarative semantics, we need to
+
 1) identify the input data to be migrated or imported to the remote system
+
 2) migrate the input data to the backend system in the compatible format
+
 3) rename the input, construct an identical query using the target query language
+
 4) send the result data back
 
-To execute the above query in Spark, the four steps could be taken as following:
+To execute the above query in Spark, we could take the following four steps:
 
 The remote system module should implement the data rename and migration interface.
 
@@ -54,9 +66,9 @@ The remote system module should implement the data rename and migration interfac
 
 2) in reponse of the renaming and migration request , the Spark adapter constructs a JDBCRDD for rand_seq, creates temp view by renaming it as `rs`
 
-COMMAND (MIGRATE-RENAME, 'rand_seq', 'rs')
+COMMAND (MIGRATE-RENAME, brand_seq', 'rs')
 
-there are two data migration styles: push and pull. For lazy execution systems like Spark, a pull style migration service is usally employed. Data pulling happens after the remote query starts. 
+there are two data migration styles: push and pull. For lazy execution systems like Spark, a pull style data migration is more plausible than push migration. Data pulling happens after the remote query starts. 
 
 3) 
 
