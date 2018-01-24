@@ -109,4 +109,95 @@ $SPARK_HOME/bin/spark-shell --packages com.databricks:spark-csv_2.11:1.5.0
 After laptop updated to High Sierra (10.13.2), trying ssh connection to local server all failed due to unknown identification issues. It turns out the culprit is the local socks proxy. When the socks is diabled, ssh works fine. 
 
 
+## 1/23/2018
+
+Postgres performance tuning.
+
+To exploit the best tps and latency requires deep understanding of how different server configurations impact db performance and how os interferes with the db server when theres resource constraints and contention.
+
+First, we should know the underlying hardware. Some figures are mostly importmant, such as the disk speed, memory size, cpu frequency and number of processors.
+
+Standard tools for measuring disk IO performance.
+
+Have cache activated using hdparm -W1, then measure write streaming performance with dd. Make sure that results are averaged from multiple runs.
+
+```
+bai@ccrfox248:~$ sudo hdparm -W1 /dev/sda1
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=1G count=1 oflag=direct
+1+0 records in
+1+0 records out
+1073741824 bytes (1.1 GB) copied, 12.4466 s, 86.3 MB/s
+```
+
+With cache deactivated(hdparm -W0), measure the write streaming again.
+
+```
+bai@ccrfox248:~$ sudo hdparm -W0 /dev/sda1
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=1G count=1 oflag=direct
+1+0 records in
+1+0 records out
+1073741824 bytes (1.1 GB) copied, 18.0897 s, 59.4 MB/s
+```
+
+Cache on, small writes.
+```
+bai@ccrfox248:~$ sudo hdparm -W1 /dev/sda1
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=512 count=1000 oflag=direct1000+0 records in
+1000+0 records out
+512000 bytes (512 kB) copied, 0.250835 s, 2.0 MB/s
+```
+
+Cache off, small writes.
+```
+bai@ccrfox248:~$ sudo hdparm -W0 /dev/sda1
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=512 count=1000 oflag=direct1000+0 records in
+1000+0 records out
+512000 bytes (512 kB) copied, 15.6599 s, 32.7 kB/s
+```
+
+Cache on, streaming, synchronized IO
+```
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=1G count=1 oflag=dsync
+1+0 records in
+1+0 records out
+1073741824 bytes (1.1 GB) copied, 14.3929 s, 74.6 MB/s
+```
+
+Cache off, streaming, synchronized IO
+```
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=1G count=1 oflag=dsync
+1+0 records in
+1+0 records out
+1073741824 bytes (1.1 GB) copied, 15.7831 s, 68.0 MB/s
+```
+
+Cache on, small writes, synchronized IO, VERY SLOW
+```
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=512 count=1000 oflag=dsync
+1000+0 records in
+1000+0 records out
+512000 bytes (512 kB) copied, 57.6155 s, 8.9 kB/s
+```
+
+Cache off, small writes, synchronized IO, VERY SLOW
+```
+bai@ccrfox248:~$ dd if=/dev/zero of=/tmp/testfile bs=512 count=1000 oflag=dsync
+1000+0 records in
+1000+0 records out
+512000 bytes (512 kB) copied, 66.9303 s, 7.6 kB/s
+```
+
+What are direct IO, synchronized IO and nonblocking IO anyways?
+
+Direct IO avoids caching in the kernel and sends IO requests directly to disk.
+
+In Linux terminology, synchronized IO means writes won't return until the data is actually persisted to the storage whereas blocking IO simply means the writes return when the data is copied to the kernel.
+
+Use `hdparm` command on Linux to set SATA/IDE device parameters.
+
+Use `iostat` command to measure IO usage.
+
+On the test machine in our lab, the measured IOPS are ~250 for streaming direct write, ~170 for streaming synchronized write.
+
+Postgres performance test is done using pgbench. A quick web search reveals that people have done a nice comparison study using benchmarks for both Postgres and MySQL. Here we follow a blog post from Percona. The source is downloaded from https://github.com/postgrespro/pg_oltp_bench.git
 
