@@ -201,3 +201,53 @@ On the test machine in our lab, the measured IOPS are ~250 for streaming direct 
 
 Postgres performance test is done using pgbench. A quick web search reveals that people have done a nice comparison study using benchmarks for both Postgres and MySQL. Here we follow a blog post from Percona. The source is downloaded from https://github.com/postgrespro/pg_oltp_bench.git
 
+## 1/25/2018
+
+Postgres tuning.
+
+https://github.com/jfcoz/postgresqltuner
+
+postgresqltuner is simple configuration advice tool for postgres.
+
+By running a quick screening in one of our machines, the tool sugggested several system parameter changes:
+
+```
+=====  Configuration advices  =====
+-----  checkpoint  -----
+[MEDIUM] Your checkpoint completion target is too low. Put something nearest from 0.8/0.9 to balance your writes better during the checkpoint interval
+-----  extension  -----
+[LOW] Enable pg_stat_statements to collect statistics on all queries (not only queries longer than log_min_duration_statement in logs)
+-----  sysctl  -----
+[URGENT] set vm.overcommit_memory=2 in /etc/sysctl.conf and run sysctl -p to reload it. This will disable memory overcommitment and avoid postgresql killed by OOM killer.
+```
+
+OS memory management settings that affect writeout performance:
+
+vm.dirty_expire_centisecs
+vm.overcommit_memory
+vm.overcommit_ratio
+
+Some pg parameters that matter most to performance:
+
+shared_buffers
+
+effective_cache_size
+
+checkpoint_timeout
+
+checkpoint_completion_target
+
+work_mem
+
+wal_sync_method
+
+wal_buffers
+
+...
+
+Running pgbench suggests the RW workload only achieves ~400 tps, consuming about 40MB of write bandwidth. The bandwidth usage is similar to writing 1MB blocks continuously, which can be simulated by running following dd command:
+
+```
+dd if=/dev/zero of=/tmp/testfile bs=1M count=10000 oflag=dsync
+```
+
