@@ -251,3 +251,40 @@ Running pgbench suggests the RW workload only achieves ~400 tps, consuming about
 dd if=/dev/zero of=/tmp/testfile bs=1M count=10000 oflag=dsync
 ```
 
+## 4/11/2018
+
+Postgres 10 hot standby setup.
+
+On master, edit postgresql.conf to enable replication and archiving. Most importantly, set the following parameters to the desired values. 
+
+```
+wal_level = replica
+synchronous_standby_names = 'standby1,standby2'
+synchronous_commit = on   # for synchronous streaming
+archive_mode = on
+archive_command = 'test ! -f /usr/local/pgsql/data/archive/%f && cp %p /usr/local/pgsql/data/archive/%f'
+```
+
+How synchronously the master waits for the standbys when committing a transaction is determined by the `synchronous_commit` setting. Details refer to [Postgresql 10's document](https://www.postgresql.org/docs/10/static/warm-standby.html). Briefly, remote_write requires transaction committing to wait for the replies that the standbys have written the commit record to os, remote_apply for the replies that the standbys have replayed the transaction on their own databases.
+
+Next, we create a replication slot for each standby.
+
+```
+psql -c 'SELECT pg_create_physical_replication_slot("standby1");'
+```
+
+Restart the master server and now switch to the standby machine.
+
+The first thing to do is backup the master database. We use the standard pg backup tool pg_basebackup. 
+
+With pg_basebackup, the data of the master database cluster is copied to the standby machine where the standby server can start streaming right away against what's copied over. 
+
+```
+pg_basebackup -D standby -Xs -S standby1 -c fast -P -R -l 'initial backup' -h 172.16.101.115 -p 5432
+```
+
+Remember to set hot_standby to on if not yet.
+
+Start the standby postgres server.
+
+
