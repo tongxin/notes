@@ -287,4 +287,12 @@ Remember to set hot_standby to on if not yet.
 
 Start the standby postgres server.
 
+## 4/16/2018
+
+Some useful system performance monitoring tools.
+
+sysstat utilities: iostat, pidstat, sar
+
+dstat, iotop
+
 
