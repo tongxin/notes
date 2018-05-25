@@ -44,16 +44,37 @@ LEAVE CLUSTER
 
 ## DDL for replicated and distributed tables
 
-To shard a table, we have to specify how the distribution is to be carried out
-at the table creation time. This typically requires information about 
-distribution type and partition column. 
+To shard a table, we have to specify how the relation is going to be
+distributed at the table creation time. This typically requires information
+about the distribution type and the key column. 
 
 ```
 CREATE DISTRIBUTED TABLE table (...) BY HASH (col)
 CREATE REPLICATED TABLE table (...)
 DROP DISTRIBUTED TABLE table  
 ```
+The metadata about all the distributed tables are maintained in the system
+catalog pg_distributed_tables. An update of this catalog happens if and only
+if a distributed table command is successfully committed, which requires 
+going throug paxos.
 
-All the distributed tables are described in the system catalog pg_distributed_tables. 
+## Distributed execution model
 
+Previous sharding solutions such as Postgres-xl and postgrespro are mostly
+built on an execution model in which a remote query is decomposed to subqueries
+that each directly relates to a particular remote node. They may adopt different
+remote querying methods through fdw or other custom interfaces out of efficiency
+concern but the planning complexity is inevitably high. We resort to a layered
+execution model in which the global query interface defines a clear abstraction
+to the client query system. The global query interface is like foreign data
+service exposed through fdw except that it's not associated with a particular
+server address.     
+
+## Query planning and execution
+
+
+## Cluster wide communication and reliable broadcast
+
+
+## Session management
 
