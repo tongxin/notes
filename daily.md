@@ -295,4 +295,7 @@ sysstat utilities: iostat, pidstat, sar
 
 dstat, iotop
 
+## 9/3/2018
+
+Use ``parted'' on linux for GPT partitioning. Other useful fs/disk utility commands: ``lsblk'' for showing block device information, ``df -h'' for listing file systems displayed in a human readable fashion.
 
