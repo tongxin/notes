@@ -297,5 +297,10 @@ dstat, iotop
 
 ## 9/3/2018
 
-Use ``parted'' on linux for GPT partitioning. Other useful fs/disk utility commands: ``lsblk'' for showing block device information, ``df -h'' for listing file systems displayed in a human readable fashion.
+Use ``parted'' on linux for GPT partitioning. Other useful fs/disk commands: ``lsblk'', for showing block device information, ``blkid'', for printing UUIDs for each block device, and ``df -h'', for listing file systems displayed in a human readable fashion.
+
+## 9/8/2018
+
+Use ``--noreloda'' command line option when debugging Django server app if the debugger doesnt support following child processes.
+
 
