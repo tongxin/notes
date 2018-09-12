@@ -303,4 +303,7 @@ Use ``parted'' on linux for GPT partitioning. Other useful fs/disk commands: ``l
 
 Use ``--noreloda'' command line option when debugging Django server app if the debugger doesnt support following child processes.
 
+## 9/12/2018
+
+Ooops, I accidentally removed all the entire directory of /usr/local/lib and fortunately was saved by ``extundelete --restore-all /dev/sda4''.
 
