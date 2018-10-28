@@ -307,3 +307,65 @@ Use ``--noreloda'' command line option when debugging Django server app if the d
 
 Ooops, I accidentally removed all the entire directory of /usr/local/lib and fortunately was saved by ``extundelete --restore-all /dev/sda4''.
 
+## 10/28/2018
+
+A few examples of wrapping sql queries in fab commands.
+
+```
+from fabric.api import (env, hide, settings, local, task, lcd)
+from fabric.state import output
+
+
+
+def build_psql(sql):
+    return 'psql -p 5433 -d xsbench -c "{}"'.format(sql)
+
+@task
+def add_node(host, user, passwd):
+    sql = "SELECT xschema.add_node('host={} dbname=xsbench port=5433 user={} password={}', repl_group=>'rg_0');".format(host, user, passwd)
+    cmd = build_psql(sql)
+    with hide('running'):
+        local(cmd)
+
+@task
+def show_nodes():
+    sql = "select id as node_id, connection_string from xschema.nodes;"
+    cmd = build_psql(sql)
+    with hide('running'):
+        local(cmd)
+@task
+def shard_table(table_name, sharding_key, total_partitions):
+    sql = "select xschema.create_hash_partitions('{}', '{}', '{}', 0)".format(table_name, sharding_key, total_partitions)
+    cmd = build_psql(sql)
+    with hide('running'):
+        local(cmd)
+
+@task
+def show_partitions(table_name):
+    sql = "select part_name as partition, node_id, relation as table from xschema.partitions where relation = {}".format(table_name)
+    cmd = build_psql(sql)
+    with hide('running'):
+        local(cmd)
+
+@task
+def move_partition(partition, node):
+    sql = "select xschema.mv_partition('{}', '{}')".format(partition, node)
+    cmd = build_psql(sql)
+    with hide('running'):
+        local(cmd)
+
+@task
+def show_standbys():
+    sql = "select client_addr as standby_addr, client_port as port, backend_start, state, sent_lsn, write_lsn, flush_lsn, replay_lsn, sync_state from pg_stat_replication;"
+    cmd = build_psql(sql)
+    with hide('running'):
+        local(cmd)
+
+@task
+def throttle_connections(ratio):
+    sql = "select count(*) as removed from (select pid, pg_terminate_backend(pid) as terminated from pg_stat_activity where pid <> pg_backend_pid() and random() < {}) a;".format(ratio)
+    cmd = build_psql(sql)
+    with hide('running'):
+        local(cmd)
+
+```
