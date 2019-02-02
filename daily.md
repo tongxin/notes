@@ -369,3 +369,12 @@ def throttle_connections(ratio):
         local(cmd)
 
 ```
+
+
+## 2/2/2019
+
+Some IO diagnosis tools brought to attention.
+
+dstat, iotop, btrace, blktrace
+
+
